@@ -1,3 +1,6 @@
+"""
+Fetch latest afval kalender informatie
+"""
 import requests
 import sys
 from datetime import datetime, timedelta
@@ -46,13 +49,17 @@ def main():
     sys.stderr.write(f"Address {address.get("Street")} {address.get("HouseNumber")} ({address.get("UniqueId")})")
     address_id = address.get("UniqueId")
 
+    start_date = f"{year}-01-01"
+    end_date   = f"{year+2}-01-01"
+    sys.stderr.write(f"Fetching from {start_date} to {end_date}\n")
+
     calendar_data = post(
         "https://twentemilieuapi.ximmio.com/api/GetCalendar",
         {
             "companyCode": "8d97bb56-5afd-4cbc-a651-b4f7314264b4",
             "uniqueAddressID": address_id,
-            "startDate": f"{year}-01-01",
-            "endDate": f"{year+2}-01-01",
+            "startDate": start_date,
+            "endDate": end_date,
         },
     )
 
@@ -71,6 +78,9 @@ def main():
 
         if event_type == "TREE":
             event_type = "Kerstboom"
+
+        if event_type == "GREY":
+            event_type = "Rest Afval"
 
         for date in entry.get("pickupDates", []):
             date_formatted = datetime.strptime(date, "%Y-%m-%dT%H:%M:%S").strftime("%Y%m%d")
