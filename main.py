@@ -66,34 +66,42 @@ def main():
     events = []
     for entry in calendar_data:
         event_type = entry.get("_pickupTypeText", "Unknown")
+        event_color = None
 
         if event_type == "PAPER":
             event_type = "Oud Papier"
+            event_color = "blue"
 
         if event_type in ["PACKAGES", "PACKAGESBAG"]:
             event_type = "Verpakkingen"
+            event_color = "orange"
 
         if event_type == "GREEN":
             event_type = "Groen Afval"
+            event_color = "green"
 
         if event_type == "TREE":
             event_type = "Kerstboom"
+            event_color = "green"
 
         if event_type == "GREY":
             event_type = "Rest Afval"
+            event_color = "grey"
 
         for date in entry.get("pickupDates", []):
             date_formatted = datetime.strptime(date, "%Y-%m-%dT%H:%M:%S").strftime("%Y%m%d")
-            events.append((date_formatted, event_type))
+            events.append((date_formatted, event_type, event_color))
 
     events.sort()
 
     # Save to .ics file
     sys.stdout.write("BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//PickupSchedule//EN\n")
-    for date, type in events:
+    for date, type, color in events:
         sys.stderr.write(f"{date}: {type}\n")
         sys.stdout.write("BEGIN:VEVENT\n")
         sys.stdout.write(f"SUMMARY:{type}\n")
+        if color is not None:
+            sys.stdout.write(f"COLOR:{color}\n")
         sys.stdout.write(f"DTSTART;VALUE=DATE:{date}\n")
         sys.stdout.write(f"DTEND;VALUE=DATE:{date}\n")
         sys.stdout.write("END:VEVENT\n")
