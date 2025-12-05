@@ -70,7 +70,7 @@ def main():
         if event_type == "PAPER":
             event_type = "Oud Papier"
 
-        if event_type == "PACKAGES":
+        if event_type in ["PACKAGES", "PACKAGESBAG"]:
             event_type = "Verpakkingen"
 
         if event_type == "GREEN":
