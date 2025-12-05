@@ -1,5 +1,5 @@
 """
-Fetch latest afval kalender informatie
+Fetch latest afval kalender information
 """
 import requests
 import sys
